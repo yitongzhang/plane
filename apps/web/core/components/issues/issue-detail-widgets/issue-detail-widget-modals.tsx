@@ -12,7 +12,6 @@ import { WorkItemAdditionalWidgetModals } from "@/plane-web/components/issues/is
 // local imports
 import { IssueLinkCreateUpdateModal } from "../issue-detail/links/create-update-link-modal";
 // helpers
-import { CreateUpdateIssueModal } from "../issue-modal/modal";
 import { useLinkOperations } from "./links/helper";
 import { useSubIssueOperations } from "./sub-issues/helper";
 
@@ -85,12 +84,6 @@ export const IssueDetailWidgetModals = observer(function IssueDetailWidgetModals
     setLastWidgetAction("sub-work-items");
   };
 
-  const handleCreateUpdateModalOnSubmit = async (_issue: TIssue) => {
-    if (_issue.parent_id) {
-      await subIssueOperations.addSubIssue(workspaceSlug, projectId, _issue.parent_id, [_issue.id]);
-    }
-  };
-
   const handleIssueLinkModalOnClose = () => {
     toggleIssueLinkModalStore(false);
     setLastWidgetAction("links");
@@ -126,11 +119,6 @@ export const IssueDetailWidgetModals = observer(function IssueDetailWidgetModals
   };
 
   // helpers
-  const createUpdateModalData: Partial<TIssue> = {
-    parent_id: issueCrudOperationState?.create?.parentIssueId,
-    project_id: projectId,
-  };
-
   const existingIssuesModalSearchParams = {
     sub_issue: true,
     issue_id: issueCrudOperationState?.existing?.parentIssueId,
@@ -143,12 +131,6 @@ export const IssueDetailWidgetModals = observer(function IssueDetailWidgetModals
     issueCrudOperationState?.existing?.parentIssueId &&
     isSubIssuesModalOpen;
 
-  const shouldRenderCreateUpdateModal =
-    !hideWidgets?.includes("sub-work-items") &&
-    issueCrudOperationState?.create?.toggle &&
-    issueCrudOperationState?.create?.parentIssueId &&
-    isCreateIssueModalOpen;
-
   return (
     <>
       {!hideWidgets?.includes("links") && (
@@ -157,16 +139,6 @@ export const IssueDetailWidgetModals = observer(function IssueDetailWidgetModals
           handleOnClose={handleIssueLinkModalOnClose}
           linkOperations={handleLinkOperations}
           issueServiceType={issueServiceType}
-        />
-      )}
-
-      {shouldRenderCreateUpdateModal && (
-        <CreateUpdateIssueModal
-          isOpen={issueCrudOperationState?.create?.toggle}
-          data={createUpdateModalData}
-          onClose={handleCreateUpdateModalClose}
-          onSubmit={handleCreateUpdateModalOnSubmit}
-          isProjectSelectionDisabled
         />
       )}
 

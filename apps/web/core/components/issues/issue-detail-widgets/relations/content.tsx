@@ -6,8 +6,6 @@ import { useTranslation } from "@plane/i18n";
 import type { TIssue, TIssueServiceType } from "@plane/types";
 import { EIssueServiceType } from "@plane/types";
 import { Collapsible } from "@plane/ui";
-// components
-import { CreateUpdateIssueModal } from "@/components/issues/issue-modal/modal";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 // Plane-web
@@ -202,7 +200,7 @@ export const RelationsCollapsibleContent = observer(function RelationsCollapsibl
 
       {shouldRenderIssueUpdateModal && (
         <>
-          {issueCrudState?.update?.issue?.is_epic ? (
+          {issueCrudState?.update?.issue?.is_epic && (
             <CreateUpdateEpicModal
               isOpen={issueCrudState?.update?.toggle}
               onClose={() => {
@@ -213,19 +211,6 @@ export const RelationsCollapsibleContent = observer(function RelationsCollapsibl
               onSubmit={async (_issue: TIssue) => {
                 if (!_issue.id || !_issue.project_id) return;
                 await epicOperations.update(workspaceSlug, _issue.project_id, _issue.id, _issue);
-              }}
-            />
-          ) : (
-            <CreateUpdateIssueModal
-              isOpen={issueCrudState?.update?.toggle}
-              onClose={() => {
-                handleIssueCrudState("update", null, null);
-                toggleCreateIssueModal(false);
-              }}
-              data={issueCrudState?.update?.issue ?? undefined}
-              onSubmit={async (_issue: TIssue) => {
-                if (!_issue.id || !_issue.project_id) return;
-                await issueOperations.update(workspaceSlug, _issue.project_id, _issue.id, _issue);
               }}
             />
           )}

@@ -25,7 +25,6 @@ import { DuplicateWorkItemModal } from "@/plane-web/components/issues/issue-layo
 // helper
 import { ArchiveIssueModal } from "../../archive-issue-modal";
 import { DeleteIssueModal } from "../../delete-issue-modal";
-import { CreateUpdateIssueModal } from "../../issue-modal/modal";
 import type { IQuickActionProps } from "../list/list-view-types";
 import type { MenuItemFactoryProps } from "./helper";
 import { useWorkItemDetailMenuItems } from "./helper";
@@ -62,7 +61,6 @@ export const WorkItemDetailQuickActions = observer(function WorkItemDetailQuickA
   const { workspaceSlug } = useParams();
   const pathname = usePathname();
   // states
-  const [createUpdateIssueModal, setCreateUpdateIssueModal] = useState(false);
   const [issueToEdit, setIssueToEdit] = useState<TIssue | undefined>(undefined);
   const [deleteIssueModal, setDeleteIssueModal] = useState(false);
   const [archiveIssueModal, setArchiveIssueModal] = useState(false);
@@ -100,11 +98,6 @@ export const WorkItemDetailQuickActions = observer(function WorkItemDetailQuickA
     ["id"]
   );
 
-  const customEditAction = () => {
-    setCreateUpdateIssueModal(true);
-    if (toggleEditIssueModal) toggleEditIssueModal(true);
-  };
-
   const customDeleteAction = async () => {
     setDeleteIssueModal(true);
     if (toggleDeleteIssueModal) toggleDeleteIssueModal(true);
@@ -138,7 +131,7 @@ export const WorkItemDetailQuickActions = observer(function WorkItemDetailQuickA
     isDeletingAllowed,
     isInArchivableGroup,
     setIssueToEdit,
-    setCreateUpdateIssueModal: customEditAction,
+    setCreateUpdateIssueModal: () => {},
     setDeleteIssueModal: customDeleteAction,
     setArchiveIssueModal: customArchiveAction,
     setDuplicateWorkItemModal: customDuplicateAction,
@@ -211,20 +204,6 @@ export const WorkItemDetailQuickActions = observer(function WorkItemDetailQuickA
           if (toggleDeleteIssueModal) toggleDeleteIssueModal(false);
         }}
         onSubmit={handleDelete}
-      />
-      <CreateUpdateIssueModal
-        isOpen={createUpdateIssueModal}
-        onClose={() => {
-          setCreateUpdateIssueModal(false);
-          setIssueToEdit(undefined);
-          if (toggleEditIssueModal) toggleEditIssueModal(false);
-        }}
-        data={issueToEdit ?? duplicateIssuePayload}
-        onSubmit={async (data) => {
-          if (issueToEdit && handleUpdate) await handleUpdate(data);
-        }}
-        storeType={EIssuesStoreType.PROJECT}
-        fetchIssueDetails={false}
       />
       {issue.project_id && workspaceSlug && (
         <DuplicateWorkItemModal
