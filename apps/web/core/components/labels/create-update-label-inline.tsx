@@ -19,7 +19,7 @@ const errorCodes = {
 };
 
 export type TLabelOperationsCallbacks = {
-  createLabel: (data: Partial<IIssueLabel>) => Promise<IIssueLabel>;
+  createLabel?: (data: Partial<IIssueLabel>) => Promise<IIssueLabel>;
   updateLabel: (labelId: string, data: Partial<IIssueLabel>) => Promise<IIssueLabel>;
 };
 
@@ -82,7 +82,7 @@ export const CreateUpdateLabelInline = observer(
     };
 
     const handleLabelCreate: SubmitHandler<IIssueLabel> = async (formData) => {
-      if (isSubmitting) return;
+      if (isSubmitting || !labelOperationsCallbacks.createLabel) return;
 
       await labelOperationsCallbacks
         .createLabel(formData)
