@@ -23,9 +23,6 @@ export const coreRoutes: RouteConfigEntry[] = [
     route("accounts/set-password", "./(all)/accounts/set-password/page.tsx"),
   ]),
 
-  // Create Workspace
-  layout("./(all)/create-workspace/layout.tsx", [route("create-workspace", "./(all)/create-workspace/page.tsx")]),
-
   // Onboarding
   layout("./(all)/onboarding/layout.tsx", [route("onboarding", "./(all)/onboarding/page.tsx")]),
 

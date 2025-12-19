@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { observer } from "mobx-react";
 import Link from "next/link";
 // icons
-import { CirclePlus, LogOut, Mails } from "lucide-react";
+import { LogOut, Mails } from "lucide-react";
 // ui
 import { Menu, Transition } from "@headlessui/react";
 // plane imports
@@ -18,8 +18,6 @@ import { AppSidebarItem } from "@/components/sidebar/sidebar-item";
 import { useAppTheme } from "@/hooks/store/use-app-theme";
 import { useWorkspace } from "@/hooks/store/use-workspace";
 import { useUser, useUserProfile } from "@/hooks/store/user";
-// plane web helpers
-import { getIsWorkspaceCreationDisabled } from "@/plane-web/helpers/instance.helper";
 // components
 import { WorkspaceLogo } from "../logo";
 import SidebarDropdownItem from "./dropdown-item";
@@ -36,8 +34,6 @@ export const WorkspaceMenuRoot = observer(function WorkspaceMenuRoot(props: Work
   const { signOut } = useUser();
   const { updateUserProfile } = useUserProfile();
   const { currentWorkspace: activeWorkspace, workspaces } = useWorkspace();
-  // derived values
-  const isWorkspaceCreationEnabled = getIsWorkspaceCreationDisabled() === false;
   // translation
   const { t } = useTranslation();
   // local state
@@ -183,18 +179,6 @@ export const WorkspaceMenuRoot = observer(function WorkspaceMenuRoot(props: Work
                     )}
                   </div>
                   <div className="w-full flex flex-col items-start justify-start gap-2 px-4 py-2 text-sm">
-                    {isWorkspaceCreationEnabled && (
-                      <Link href="/create-workspace" className="w-full">
-                        <Menu.Item
-                          as="div"
-                          className="flex items-center gap-2 rounded px-2 py-1 text-sm font-medium text-custom-sidebar-text-200 hover:bg-custom-sidebar-background-80"
-                        >
-                          <CirclePlus className="size-4 flex-shrink-0" />
-                          {t("create_workspace")}
-                        </Menu.Item>
-                      </Link>
-                    )}
-
                     <Link href="/invitations" className="w-full" onClick={handleItemClick}>
                       <Menu.Item
                         as="div"
