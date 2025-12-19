@@ -1,14 +1,13 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { observer } from "mobx-react";
-import { Plus } from "lucide-react";
 // plane imports
-import { EIconSize, STATE_TRACKER_ELEMENTS } from "@plane/constants";
+import { EIconSize } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { StateGroupIcon, ChevronDownIcon } from "@plane/propel/icons";
 import type { IState, TStateGroups, TStateOperationsCallbacks } from "@plane/types";
 import { cn } from "@plane/utils";
 // components
-import { StateList, StateCreate } from "@/components/project-states";
+import { StateList } from "@/components/project-states";
 
 type TGroupItem = {
   groupKey: TStateGroups;
@@ -42,11 +41,9 @@ export const GroupItem = observer(function GroupItem(props: TGroupItem) {
   const dropElementRef = useRef<HTMLDivElement | null>(null);
   // plane hooks
   const { t } = useTranslation();
-  // state
-  const [createState, setCreateState] = useState(false);
   // derived values
   const currentStateExpanded = groupsExpanded.includes(groupKey);
-  const shouldShowEmptyState = states.length === 0 && currentStateExpanded && !createState;
+  const shouldShowEmptyState = states.length === 0 && currentStateExpanded;
 
   return (
     <div
@@ -77,23 +74,6 @@ export const GroupItem = observer(function GroupItem(props: TGroupItem) {
           </div>
           <div className="text-base font-medium text-custom-text-200 capitalize px-1">{groupKey}</div>
         </div>
-        <button
-          type="button"
-          data-ph-element={STATE_TRACKER_ELEMENTS.STATE_GROUP_ADD_BUTTON}
-          className={cn(
-            "flex-shrink-0 w-6 h-6 rounded flex justify-center items-center overflow-hidden transition-colors hover:bg-custom-background-80 cursor-pointer text-custom-primary-100/80 hover:text-custom-primary-100",
-            (!isEditable || createState) && "cursor-not-allowed text-custom-text-400 hover:text-custom-text-400"
-          )}
-          onClick={() => {
-            if (!createState) {
-              handleExpand(groupKey);
-              setCreateState(true);
-            }
-          }}
-          disabled={!isEditable || createState}
-        >
-          <Plus className="w-4 h-4" />
-        </button>
       </div>
 
       {shouldShowEmptyState && (
@@ -113,17 +93,6 @@ export const GroupItem = observer(function GroupItem(props: TGroupItem) {
             stateOperationsCallbacks={stateOperationsCallbacks}
             shouldTrackEvents={shouldTrackEvents}
             stateItemClassName={stateItemClassName}
-          />
-        </div>
-      )}
-
-      {isEditable && createState && (
-        <div className="">
-          <StateCreate
-            groupKey={groupKey}
-            handleClose={() => setCreateState(false)}
-            createStateCallback={stateOperationsCallbacks.createState}
-            shouldTrackEvents={shouldTrackEvents}
           />
         </div>
       )}
