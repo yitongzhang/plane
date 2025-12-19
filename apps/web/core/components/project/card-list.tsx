@@ -9,7 +9,6 @@ import { calculateTotalFilters } from "@plane/utils";
 import { ProjectsLoader } from "@/components/ui/loader/projects-loader";
 import { captureClick } from "@/helpers/event-tracker.helper";
 // hooks
-import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useProject } from "@/hooks/store/use-project";
 import { useProjectFilter } from "@/hooks/store/use-project-filter";
 import { useUserPermissions } from "@/hooks/store/user";
@@ -26,7 +25,6 @@ export const ProjectCardList = observer(function ProjectCardList(props: TProject
   // plane hooks
   const { t } = useTranslation();
   // store hooks
-  const { toggleCreateProjectModal } = useCommandPalette();
   const {
     loader,
     fetchStatus,
@@ -61,7 +59,7 @@ export const ProjectCardList = observer(function ProjectCardList(props: TProject
           {
             label: t("workspace_projects.empty_state.general.primary_button.text"),
             onClick: () => {
-              toggleCreateProjectModal(true);
+              // Button exists but does nothing - create project modal was removed
               captureClick({ elementName: PROJECT_TRACKER_ELEMENTS.EMPTY_STATE_CREATE_PROJECT_BUTTON });
             },
             disabled: !canPerformEmptyStateActions,

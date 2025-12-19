@@ -14,11 +14,9 @@ import { Tooltip } from "@plane/propel/tooltip";
 import { Loader } from "@plane/ui";
 import { copyUrlToClipboard, cn, orderJoinedProjects } from "@plane/utils";
 // components
-import { CreateProjectModal } from "@/components/project/create-project-modal";
 import { SidebarNavItem } from "@/components/sidebar/sidebar-navigation";
 // hooks
 import { useAppTheme } from "@/hooks/store/use-app-theme";
-import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useProject } from "@/hooks/store/use-project";
 import { useUserPermissions } from "@/hooks/store/user";
 import { useProjectNavigationPreferences } from "@/hooks/use-navigation-preferences";
@@ -30,13 +28,11 @@ import { SidebarProjectsListItem } from "./projects-list-item";
 export const SidebarProjectsList = observer(function SidebarProjectsList() {
   // states
   const [isAllProjectsListOpen, setIsAllProjectsListOpen] = useState(true);
-  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false); // scroll animation state
   // refs
   const containerRef = useRef<HTMLDivElement | null>(null);
   // store hooks
   const { t } = useTranslation();
-  const { toggleCreateProjectModal } = useCommandPalette();
   const { allowPermissions } = useUserPermissions();
   const { preferences: projectPreferences } = useProjectNavigationPreferences();
   const { isExtendedProjectSidebarOpened, toggleExtendedProjectSidebar } = useAppTheme();
@@ -148,14 +144,6 @@ export const SidebarProjectsList = observer(function SidebarProjectsList() {
   }, [pathname]);
   return (
     <>
-      {workspaceSlug && (
-        <CreateProjectModal
-          isOpen={isProjectModalOpen}
-          onClose={() => setIsProjectModalOpen(false)}
-          setToFavorite={false}
-          workspaceSlug={workspaceSlug.toString()}
-        />
-      )}
       <div
         ref={containerRef}
         className={cn({
@@ -186,7 +174,7 @@ export const SidebarProjectsList = observer(function SidebarProjectsList() {
                       data-ph-element={PROJECT_TRACKER_ELEMENTS.SIDEBAR_CREATE_PROJECT_TOOLTIP}
                       className="p-0.5 rounded hover:bg-custom-sidebar-background-80 flex-shrink-0"
                       onClick={() => {
-                        setIsProjectModalOpen(true);
+                        // Button exists but does nothing - create project modal was removed
                       }}
                       aria-label={t("aria_labels.projects_sidebar.create_new_project")}
                     >
@@ -275,7 +263,7 @@ export const SidebarProjectsList = observer(function SidebarProjectsList() {
             data-ph-element={PROJECT_TRACKER_ELEMENTS.SIDEBAR_CREATE_PROJECT_BUTTON}
             className="w-full flex items-center gap-1.5 px-2 py-1.5 text-sm leading-5 font-medium text-custom-sidebar-text-200 hover:bg-custom-sidebar-background-90 rounded-md"
             onClick={() => {
-              toggleCreateProjectModal(true);
+              // Button exists but does nothing - create project modal was removed
             }}
           >
             {t("add_project")}

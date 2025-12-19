@@ -12,6 +12,11 @@ import { useUser } from "@/hooks/store/user";
 // plane web imports
 import { getIsWorkspaceCreationDisabled } from "@/plane-web/helpers/instance.helper";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const noopToggleCreateProjectModal = (_value?: boolean) => {
+  // Button exists but does nothing - create project modal was removed
+};
+
 export type TPowerKCreationCommandKeys =
   | "create_work_item"
   | "create_page"
@@ -33,7 +38,6 @@ export const usePowerKCreationCommandsRecord = (): Record<TPowerKCreationCommand
   const { workspaceProjectIds, getPartialProjectById } = useProject();
   const {
     toggleCreateIssueModal,
-    toggleCreateProjectModal,
     toggleCreateCycleModal,
     toggleCreateModuleModal,
     toggleCreateViewModal,
@@ -131,7 +135,7 @@ export const usePowerKCreationCommandsRecord = (): Record<TPowerKCreationCommand
       i18n_title: "power_k.creation_actions.create_project",
       icon: FolderPlus,
       keySequence: "np",
-      action: () => toggleCreateProjectModal(true),
+      action: () => noopToggleCreateProjectModal(true),
       isEnabled: () => Boolean(canCreateProject),
       isVisible: () => Boolean(canCreateProject),
       closeOnSelect: true,

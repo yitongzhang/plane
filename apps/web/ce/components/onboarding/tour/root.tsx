@@ -13,7 +13,6 @@ import ViewsTour from "@/app/assets/onboarding/views.webp?url";
 // helpers
 import { captureClick } from "@/helpers/event-tracker.helper";
 // hooks
-import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useUser } from "@/hooks/store/user";
 // local imports
 import { TourSidebar } from "./sidebar";
@@ -80,7 +79,6 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
   // states
   const [step, setStep] = useState<TTourSteps>("welcome");
   // store hooks
-  const { toggleCreateProjectModal } = useCommandPalette();
   const { data: currentUser } = useUser();
 
   const currentStepIndex = TOUR_STEPS.findIndex((tourStep) => tourStep.key === step);
@@ -174,7 +172,7 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
                         elementName: PRODUCT_TOUR_TRACKER_ELEMENTS.CREATE_PROJECT_BUTTON,
                       });
                       onComplete();
-                      toggleCreateProjectModal(true);
+                      // Button exists but does nothing - create project modal was removed
                     }}
                   >
                     Create your first project

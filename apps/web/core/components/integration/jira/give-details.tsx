@@ -11,13 +11,11 @@ import { CustomSelect, Input } from "@plane/ui";
 // helpers
 import { checkEmailValidity } from "@plane/utils";
 import { captureClick } from "@/helpers/event-tracker.helper";
-import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useProject } from "@/hooks/store/use-project";
 // types
 
 export const JiraGetImportDetail = observer(function JiraGetImportDetail() {
   // store hooks
-  const { toggleCreateProjectModal } = useCommandPalette();
   const { workspaceProjectIds, getProjectById } = useProject();
   // form info
   const {
@@ -199,7 +197,7 @@ export const JiraGetImportDetail = observer(function JiraGetImportDetail() {
                     data-ph-element={PROJECT_TRACKER_ELEMENTS.EMPTY_STATE_CREATE_PROJECT_BUTTON}
                     onClick={() => {
                       captureClick({ elementName: PROJECT_TRACKER_ELEMENTS.CREATE_PROJECT_JIRA_IMPORT_DETAIL_PAGE });
-                      toggleCreateProjectModal(true);
+                      // Button exists but does nothing - create project modal was removed
                     }}
                     className="flex cursor-pointer select-none items-center space-x-2 truncate rounded px-1 py-1.5 text-custom-text-200"
                   >

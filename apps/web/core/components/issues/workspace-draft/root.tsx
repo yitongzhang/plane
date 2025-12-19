@@ -11,7 +11,6 @@ import { EUserWorkspaceRoles } from "@plane/types";
 import { cn } from "@plane/utils";
 import { captureClick } from "@/helpers/event-tracker.helper";
 // hooks
-import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useProject } from "@/hooks/store/use-project";
 import { useUserPermissions } from "@/hooks/store/user";
 import { useWorkspaceDraftIssues } from "@/hooks/store/workspace-draft";
@@ -32,7 +31,6 @@ export const WorkspaceDraftIssuesRoot = observer(function WorkspaceDraftIssuesRo
   // hooks
   const { loader, paginationInfo, fetchIssues, issueIds } = useWorkspaceDraftIssues();
   const { workspaceProjectIds } = useProject();
-  const { toggleCreateProjectModal } = useCommandPalette();
   const { allowPermissions } = useUserPermissions();
   // derived values
   const hasMemberLevelPermission = allowPermissions(
@@ -71,7 +69,7 @@ export const WorkspaceDraftIssuesRoot = observer(function WorkspaceDraftIssuesRo
           {
             label: t("workspace_projects.empty_state.no_projects.primary_button.text"),
             onClick: () => {
-              toggleCreateProjectModal(true);
+              // Button exists but does nothing - create project modal was removed
               captureClick({ elementName: PROJECT_TRACKER_ELEMENTS.EMPTY_STATE_CREATE_PROJECT_BUTTON });
             },
             disabled: !hasMemberLevelPermission,

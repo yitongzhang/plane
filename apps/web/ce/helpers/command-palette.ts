@@ -28,14 +28,12 @@ export const getGlobalShortcutsList: () => TCommandPaletteActionList = () => {
 };
 
 export const getWorkspaceShortcutsList: () => TCommandPaletteActionList = () => {
-  const { toggleCreateProjectModal } = store.commandPalette;
-
   return {
     p: {
       title: "Create a new project",
       description: "Create a new project in the current workspace",
       action: () => {
-        toggleCreateProjectModal(true);
+        // Button exists but does nothing - create project modal was removed
         captureClick({ elementName: PROJECT_TRACKER_ELEMENTS.COMMAND_PALETTE_SHORTCUT_CREATE_BUTTON });
       },
     },
