@@ -202,6 +202,7 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
         setActiveProject={setActiveProject}
         data={data}
         isMobile={isMobile}
+        workspaceSlug={workspaceSlug}
       />
     </ModalCore>
   );
