@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 // icons
-import { LogOut, MoveLeft, Activity, Bell, CircleUser, KeyRound, Settings2, Mails } from "lucide-react";
+import { LogOut, MoveLeft, Activity, Bell, CircleUser, KeyRound, Settings2, CirclePlus, Mails } from "lucide-react";
 // plane imports
 import { PROFILE_ACTION_LINKS } from "@plane/constants";
 import { useOutsideClickDetector } from "@plane/hooks";
@@ -21,6 +21,12 @@ import { useUser, useUserSettings } from "@/hooks/store/user";
 import { usePlatformOS } from "@/hooks/use-platform-os";
 
 const WORKSPACE_ACTION_LINKS = [
+  {
+    key: "create_workspace",
+    Icon: CirclePlus,
+    i18n_label: "create_workspace",
+    href: "/create-workspace",
+  },
   {
     key: "invitations",
     Icon: Mails,

@@ -178,8 +178,8 @@ export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props
                 </Link>
               )}
               {allWorkspaces && allWorkspaces.length === 0 && (
-                <Link href={`/invitations`} className={cn(getButtonStyling("neutral-primary", "md"))}>
-                  Check invitations
+                <Link href={`/`} className={cn(getButtonStyling("neutral-primary", "md"))}>
+                  Create new workspace
                 </Link>
               )}
             </div>
@@ -207,8 +207,15 @@ export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props
             <div className="flex items-center justify-center gap-2">
               <Link href="/invitations">
                 <span>
-                  <Button variant="primary" size="sm">
+                  <Button variant="neutral-primary" size="sm">
                     Check pending invites
+                  </Button>
+                </span>
+              </Link>
+              <Link href="/create-workspace">
+                <span>
+                  <Button variant="primary" size="sm">
+                    Create new workspace
                   </Button>
                 </span>
               </Link>
