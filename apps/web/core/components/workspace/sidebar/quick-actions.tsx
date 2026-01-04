@@ -7,6 +7,7 @@ import { useTranslation } from "@plane/i18n";
 import { AddWorkItemIcon } from "@plane/propel/icons";
 import type { TIssue } from "@plane/types";
 // components
+import { CreateUpdateIssueModal } from "@/components/issues/issue-modal/modal";
 import { SidebarAddButton } from "@/components/sidebar/add-button";
 // hooks
 import { useCommandPalette } from "@/hooks/store/use-command-palette";
@@ -17,6 +18,7 @@ import useLocalStorage from "@/hooks/use-local-storage";
 export const SidebarQuickActions = observer(function SidebarQuickActions() {
   const { t } = useTranslation();
   // states
+  const [isDraftIssueModalOpen, setIsDraftIssueModalOpen] = useState(false);
   const [_isDraftButtonOpen, setIsDraftButtonOpen] = useState(false);
   // refs
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,6 +38,7 @@ export const SidebarQuickActions = observer(function SidebarQuickActions() {
     EUserPermissionsLevel.WORKSPACE
   );
   const disabled = joinedProjectIds.length === 0 || !canCreateIssue;
+  const workspaceDraftIssue = workspaceSlug ? (storedValue?.[workspaceSlug] ?? undefined) : undefined;
 
   const handleMouseEnter = () => {
     // if enter before time out clear the timeout
@@ -51,8 +54,23 @@ export const SidebarQuickActions = observer(function SidebarQuickActions() {
     }, 300);
   };
 
+  const removeWorkspaceDraftIssue = () => {
+    const draftIssues = storedValue ?? {};
+    if (workspaceSlug && draftIssues[workspaceSlug]) delete draftIssues[workspaceSlug];
+    setValue(draftIssues);
+    return Promise.resolve();
+  };
+
   return (
     <>
+      <CreateUpdateIssueModal
+        isOpen={isDraftIssueModalOpen}
+        onClose={() => setIsDraftIssueModalOpen(false)}
+        data={workspaceDraftIssue ?? {}}
+        onSubmit={() => removeWorkspaceDraftIssue()}
+        fetchIssueDetails={false}
+        isDraft
+      />
       <div className="flex items-center justify-between gap-2 cursor-pointer">
         <SidebarAddButton
           label={

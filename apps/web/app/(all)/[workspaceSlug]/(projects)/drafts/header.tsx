@@ -1,12 +1,16 @@
+import { useState } from "react";
 import { observer } from "mobx-react";
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 // ui
+import { Button } from "@plane/propel/button";
 import { DraftIcon } from "@plane/propel/icons";
+import { EIssuesStoreType } from "@plane/types";
 import { Breadcrumbs, Header } from "@plane/ui";
 // components
 import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
 import { CountChip } from "@/components/common/count-chip";
+import { CreateUpdateIssueModal } from "@/components/issues/issue-modal/modal";
 
 // hooks
 import { useProject } from "@/hooks/store/use-project";
@@ -14,6 +18,8 @@ import { useUserPermissions } from "@/hooks/store/user";
 import { useWorkspaceDraftIssues } from "@/hooks/store/workspace-draft";
 
 export const WorkspaceDraftHeader = observer(function WorkspaceDraftHeader() {
+  // state
+  const [isDraftIssueModalOpen, setIsDraftIssueModalOpen] = useState(false);
   // store hooks
   const { allowPermissions } = useUserPermissions();
   const { paginationInfo } = useWorkspaceDraftIssues();
@@ -28,6 +34,12 @@ export const WorkspaceDraftHeader = observer(function WorkspaceDraftHeader() {
 
   return (
     <>
+      <CreateUpdateIssueModal
+        isOpen={isDraftIssueModalOpen}
+        storeType={EIssuesStoreType.WORKSPACE_DRAFT}
+        onClose={() => setIsDraftIssueModalOpen(false)}
+        isDraft
+      />
       <Header>
         <Header.LeftItem>
           <div className="flex items-center gap-2.5">
@@ -47,7 +59,17 @@ export const WorkspaceDraftHeader = observer(function WorkspaceDraftHeader() {
         </Header.LeftItem>
 
         <Header.RightItem>
-          {/* Issue creation button removed */}
+          {joinedProjectIds && joinedProjectIds.length > 0 && (
+            <Button
+              variant="primary"
+              size="sm"
+              className="items-center gap-1"
+              onClick={() => setIsDraftIssueModalOpen(true)}
+              disabled={!isAuthorizedUser}
+            >
+              {t("workspace_draft_issues.draft_an_issue")}
+            </Button>
+          )}
         </Header.RightItem>
       </Header>
     </>

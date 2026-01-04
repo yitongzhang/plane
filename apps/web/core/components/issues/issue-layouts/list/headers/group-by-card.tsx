@@ -12,6 +12,7 @@ import { CustomMenu } from "@plane/ui";
 import { cn } from "@plane/utils";
 import { ExistingIssuesListModal } from "@/components/core/modals/existing-issues-list-modal";
 import { MultipleSelectGroupAction } from "@/components/core/multiple-select";
+import { CreateUpdateIssueModal } from "@/components/issues/issue-modal/modal";
 // constants
 import { captureClick } from "@/helpers/event-tracker.helper";
 import { useIssueStoreType } from "@/hooks/use-issue-layout-store";
@@ -130,6 +131,14 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
             >
               <CustomMenu.MenuItem
                 onClick={() => {
+                  captureClick({ elementName: WORK_ITEM_TRACKER_EVENTS.create });
+                  setIsOpen(true);
+                }}
+              >
+                <span className="flex items-center justify-start gap-2">Create work item</span>
+              </CustomMenu.MenuItem>
+              <CustomMenu.MenuItem
+                onClick={() => {
                   captureClick({ elementName: WORK_ITEM_TRACKER_EVENTS.add_existing });
                   setOpenExistingIssueListModal(true);
                 }}
@@ -137,10 +146,27 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
                 <span className="flex items-center justify-start gap-2">Add an existing work item</span>
               </CustomMenu.MenuItem>
             </CustomMenu>
-          ) : null)}
+          ) : (
+            <div
+              className="flex h-5 w-5 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-sm transition-all hover:bg-custom-background-80"
+              onClick={() => {
+                captureClick({ elementName: WORK_ITEM_TRACKER_EVENTS.create });
+                setIsOpen(true);
+              }}
+            >
+              <Plus width={14} strokeWidth={2} />
+            </div>
+          ))}
 
-        {isEpic && (
+        {isEpic ? (
           <CreateUpdateEpicModal isOpen={isOpen} onClose={() => setIsOpen(false)} data={issuePayload} />
+        ) : (
+          <CreateUpdateIssueModal
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            data={issuePayload}
+            storeType={storeType}
+          />
         )}
 
         {renderExistingIssueModal && (

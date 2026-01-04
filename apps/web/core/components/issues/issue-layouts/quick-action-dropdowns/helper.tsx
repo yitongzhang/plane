@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Copy, ExternalLink, Link, Trash2, XCircle, ArchiveRestoreIcon } from "lucide-react";
+import { Copy, ExternalLink, Link, Pencil, Trash2, XCircle, ArchiveRestoreIcon } from "lucide-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import { ArchiveIcon } from "@plane/propel/icons";
@@ -152,15 +152,28 @@ export const useMenuItemFactory = (props: MenuItemFactoryProps) => {
     handleRemoveFromView,
   } = props;
 
+  const createEditMenuItem = (customEditAction?: () => void): TContextMenuItem => ({
+    key: "edit",
+    title: t("common.actions.edit"),
+    icon: Pencil,
+    action:
+      customEditAction ||
+      (() => {
+        setIssueToEdit(issue);
+        setCreateUpdateIssueModal(true);
+      }),
+    shouldRender: isEditingAllowed,
+  });
+
   const createCopyMenuItem = (workspaceSlug?: string): TContextMenuItem => {
     const baseItem = {
       key: "make-a-copy",
       title: t("common.actions.make_a_copy"),
       icon: Copy,
       action: () => {
-        // Issue creation modal has been removed
+        setCreateUpdateIssueModal(true);
       },
-      shouldRender: false, // Disabled since modal is removed
+      shouldRender: isEditingAllowed && (issueTypeDetail?.is_active ?? true),
     };
 
     return createCopyMenuWithDuplication({
@@ -234,6 +247,7 @@ export const useMenuItemFactory = (props: MenuItemFactoryProps) => {
 
   return {
     ...actionHandlers,
+    createEditMenuItem,
     createCopyMenuItem,
     createOpenInNewTabMenuItem,
     createCopyLinkMenuItem,
@@ -251,6 +265,7 @@ export const useProjectIssueMenuItems = (props: MenuItemFactoryProps): TContextM
 
   return useMemo(
     () => [
+      factory.createEditMenuItem(),
       factory.createCopyMenuItem(),
       factory.createOpenInNewTabMenuItem(),
       factory.createCopyLinkMenuItem(),
@@ -281,6 +296,7 @@ export const useAllIssueMenuItems = (props: MenuItemFactoryProps): TContextMenuI
 
   return useMemo(
     () => [
+      factory.createEditMenuItem(),
       factory.createCopyMenuItem(),
       factory.createOpenInNewTabMenuItem(),
       factory.createCopyLinkMenuItem(),
@@ -294,8 +310,17 @@ export const useAllIssueMenuItems = (props: MenuItemFactoryProps): TContextMenuI
 export const useCycleIssueMenuItems = (props: MenuItemFactoryProps): TContextMenuItem[] => {
   const factory = useMenuItemFactory(props);
 
+  const customEditAction = () => {
+    props.setIssueToEdit({
+      ...props.issue,
+      cycle_id: props.cycleId ?? null,
+    });
+    props.setCreateUpdateIssueModal(true);
+  };
+
   return useMemo(
     () => [
+      factory.createEditMenuItem(customEditAction),
       factory.createCopyMenuItem(),
       factory.createOpenInNewTabMenuItem(),
       factory.createCopyLinkMenuItem(),
@@ -310,8 +335,17 @@ export const useCycleIssueMenuItems = (props: MenuItemFactoryProps): TContextMen
 export const useModuleIssueMenuItems = (props: MenuItemFactoryProps): TContextMenuItem[] => {
   const factory = useMenuItemFactory(props);
 
+  const customEditAction = () => {
+    props.setIssueToEdit({
+      ...props.issue,
+      module_ids: props.moduleId ? [props.moduleId] : [],
+    });
+    props.setCreateUpdateIssueModal(true);
+  };
+
   return useMemo(
     () => [
+      factory.createEditMenuItem(customEditAction),
       factory.createCopyMenuItem(),
       factory.createOpenInNewTabMenuItem(),
       factory.createCopyLinkMenuItem(),

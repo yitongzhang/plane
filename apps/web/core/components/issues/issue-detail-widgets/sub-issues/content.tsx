@@ -8,6 +8,7 @@ import { DeleteIssueModal } from "@/components/issues/delete-issue-modal";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 // local imports
+import { CreateUpdateIssueModal } from "../../issue-modal/modal";
 import { useSubIssueOperations } from "./helper";
 import { SubIssuesListRoot } from "./issues-list/root";
 
@@ -110,6 +111,8 @@ export const SubIssuesCollapsibleContent = observer(function SubIssuesCollapsibl
     issueCrudState.delete.parentIssueId &&
     issueCrudState.delete.issue.id;
 
+  const shouldRenderUpdateIssueModal = issueCrudState?.update?.toggle && issueCrudState?.update?.issue;
+
   return (
     <>
       {subIssueHelpers.issue_visibility.includes(parentIssueId) && (
@@ -144,6 +147,28 @@ export const SubIssuesCollapsibleContent = observer(function SubIssuesCollapsibl
             )
           }
           isSubIssue
+        />
+      )}
+
+      {shouldRenderUpdateIssueModal && (
+        <CreateUpdateIssueModal
+          isOpen={issueCrudState?.update?.toggle}
+          onClose={() => {
+            handleIssueCrudState("update", null, null);
+            toggleCreateIssueModal(false);
+          }}
+          data={issueCrudState?.update?.issue ?? undefined}
+          onSubmit={async (_issue: TIssue) => {
+            await subIssueOperations.updateSubIssue(
+              workspaceSlug,
+              projectId,
+              parentIssueId,
+              _issue.id,
+              _issue,
+              issueCrudState?.update?.issue,
+              true
+            );
+          }}
         />
       )}
     </>

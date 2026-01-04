@@ -13,6 +13,7 @@ import { EInboxIssueStatus } from "@plane/types";
 import { ControlLink, CustomMenu, Row } from "@plane/ui";
 import { copyUrlToClipboard, findHowManyDaysLeft, generateWorkItemLink } from "@plane/utils";
 // components
+import { CreateUpdateIssueModal } from "@/components/issues/issue-modal/modal";
 import { NameDescriptionUpdateStatus } from "@/components/issues/issue-update-status";
 // hooks
 import { useProject } from "@/hooks/store/use-project";
@@ -54,6 +55,7 @@ export const InboxIssueActionsHeader = observer(function InboxIssueActionsHeader
   // states
   const [isSnoozeDateModalOpen, setIsSnoozeDateModalOpen] = useState(false);
   const [selectDuplicateIssue, setSelectDuplicateIssue] = useState(false);
+  const [acceptIssueModal, setAcceptIssueModal] = useState(false);
   const [declineIssueModal, setDeclineIssueModal] = useState(false);
   const [deleteIssueModal, setDeleteIssueModal] = useState(false);
   // store
@@ -117,6 +119,7 @@ export const InboxIssueActionsHeader = observer(function InboxIssueActionsHeader
   const handleInboxIssueAccept = async () => {
     const nextOrPreviousIssueId = redirectIssue();
     await inboxIssue?.updateInboxIssueStatus(EInboxIssueStatus.ACCEPTED);
+    setAcceptIssueModal(false);
     handleRedirection(nextOrPreviousIssueId);
   };
 
@@ -231,6 +234,21 @@ export const InboxIssueActionsHeader = observer(function InboxIssueActionsHeader
           value={inboxIssue?.duplicate_to}
           onSubmit={handleInboxIssueDuplicate}
         />
+        <CreateUpdateIssueModal
+          data={inboxIssue?.issue}
+          isOpen={acceptIssueModal}
+          onClose={() => setAcceptIssueModal(false)}
+          beforeFormSubmit={handleInboxIssueAccept}
+          withDraftIssueWrapper={false}
+          fetchIssueDetails={false}
+          modalTitle={t("inbox_issue.actions.move", {
+            value: `${currentProjectDetails?.identifier}-${issue?.sequence_id}`,
+          })}
+          primaryButtonText={{
+            default: t("add_to_project"),
+            loading: t("adding"),
+          }}
+        />
         <DeclineIssueModal
           data={inboxIssue?.issue || {}}
           isOpen={declineIssueModal}
@@ -300,7 +318,7 @@ export const InboxIssueActionsHeader = observer(function InboxIssueActionsHeader
                   onClick={() =>
                     handleActionWithPermission(
                       isProjectAdmin,
-                      () => handleInboxIssueAccept(),
+                      () => setAcceptIssueModal(true),
                       t("inbox_issue.errors.accept_permission")
                     )
                   }
@@ -411,7 +429,7 @@ export const InboxIssueActionsHeader = observer(function InboxIssueActionsHeader
           inboxIssue={inboxIssue}
           isSubmitting={isSubmitting}
           handleCopyIssueLink={() => handleCopyIssueLink(workItemLink)}
-          setAcceptIssueModal={() => handleInboxIssueAccept()}
+          setAcceptIssueModal={setAcceptIssueModal}
           setDeclineIssueModal={setDeclineIssueModal}
           handleIssueSnoozeAction={handleIssueSnoozeAction}
           setSelectDuplicateIssue={setSelectDuplicateIssue}

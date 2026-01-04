@@ -18,6 +18,7 @@ import { DuplicateWorkItemModal } from "@/plane-web/components/issues/issue-layo
 // helper
 import { ArchiveIssueModal } from "../../archive-issue-modal";
 import { DeleteIssueModal } from "../../delete-issue-modal";
+import { CreateUpdateIssueModal } from "../../issue-modal/modal";
 import type { IQuickActionProps } from "../list/list-view-types";
 import type { MenuItemFactoryProps } from "./helper";
 import { useAllIssueMenuItems } from "./helper";
@@ -35,6 +36,7 @@ export const AllIssueQuickActions = observer(function AllIssueQuickActions(props
     parentRef,
   } = props;
   // states
+  const [createUpdateIssueModal, setCreateUpdateIssueModal] = useState(false);
   const [issueToEdit, setIssueToEdit] = useState<TIssue | undefined>(undefined);
   const [deleteIssueModal, setDeleteIssueModal] = useState(false);
   const [archiveIssueModal, setArchiveIssueModal] = useState(false);
@@ -71,7 +73,7 @@ export const AllIssueQuickActions = observer(function AllIssueQuickActions(props
     isDeletingAllowed: isEditingAllowed,
     isInArchivableGroup,
     setIssueToEdit,
-    setCreateUpdateIssueModal: () => {},
+    setCreateUpdateIssueModal,
     setDeleteIssueModal,
     setArchiveIssueModal,
     setDuplicateWorkItemModal,
@@ -108,6 +110,18 @@ export const AllIssueQuickActions = observer(function AllIssueQuickActions(props
         isOpen={deleteIssueModal}
         handleClose={() => setDeleteIssueModal(false)}
         onSubmit={handleDelete}
+      />
+      <CreateUpdateIssueModal
+        isOpen={createUpdateIssueModal}
+        onClose={() => {
+          setCreateUpdateIssueModal(false);
+          setIssueToEdit(undefined);
+        }}
+        data={issueToEdit ?? duplicateIssuePayload}
+        onSubmit={async (data) => {
+          if (issueToEdit && handleUpdate) await handleUpdate(data);
+        }}
+        storeType={EIssuesStoreType.GLOBAL}
       />
       {issue.project_id && workspaceSlug && (
         <DuplicateWorkItemModal
