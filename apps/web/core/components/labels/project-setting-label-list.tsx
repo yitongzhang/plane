@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // plane imports
-import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
+import { EUserPermissions, EUserPermissionsLevel, PROJECT_SETTINGS_TRACKER_ELEMENTS } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { EmptyStateCompact } from "@plane/propel/empty-state";
 import type { IIssueLabel } from "@plane/types";
 import { Loader } from "@plane/ui";
 import type { TLabelOperationsCallbacks } from "@/components/labels";
 import {
+  CreateUpdateLabelInline,
   DeleteLabelModal,
   ProjectSettingLabelGroup,
   ProjectSettingLabelItem,
 } from "@/components/labels";
 // hooks
+import { captureClick } from "@/helpers/event-tracker.helper";
 import { useLabel } from "@/hooks/store/use-label";
 import { useUserPermissions } from "@/hooks/store/user";
 // local imports
@@ -22,19 +24,28 @@ import { SettingsHeading } from "../settings/heading";
 export const ProjectSettingsLabelList = observer(function ProjectSettingsLabelList() {
   // router
   const { workspaceSlug, projectId } = useParams();
+  // refs
+  const scrollToRef = useRef<HTMLDivElement>(null);
   // states
+  const [showLabelForm, setLabelForm] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectDeleteLabel, setSelectDeleteLabel] = useState<IIssueLabel | null>(null);
   // plane hooks
   const { t } = useTranslation();
   // store hooks
-  const { projectLabels, updateLabelPosition, projectLabelsTree, updateLabel } = useLabel();
+  const { projectLabels, updateLabelPosition, projectLabelsTree, createLabel, updateLabel } = useLabel();
   const { allowPermissions } = useUserPermissions();
   // derived values
   const isEditable = allowPermissions([EUserPermissions.ADMIN], EUserPermissionsLevel.PROJECT);
   const labelOperationsCallbacks: TLabelOperationsCallbacks = {
+    createLabel: (data: Partial<IIssueLabel>) => createLabel(workspaceSlug?.toString(), projectId?.toString(), data),
     updateLabel: (labelId: string, data: Partial<IIssueLabel>) =>
       updateLabel(workspaceSlug?.toString(), projectId?.toString(), labelId, data),
+  };
+
+  const newLabel = () => {
+    setIsUpdating(false);
+    setLabelForm(true);
   };
 
   const onDrop = (
@@ -66,16 +77,52 @@ export const ProjectSettingsLabelList = observer(function ProjectSettingsLabelLi
       <SettingsHeading
         title={t("project_settings.labels.heading")}
         description={t("project_settings.labels.description")}
+        button={{
+          label: t("common.add_label"),
+          onClick: () => {
+            newLabel();
+            captureClick({
+              elementName: PROJECT_SETTINGS_TRACKER_ELEMENTS.LABELS_HEADER_CREATE_BUTTON,
+            });
+          },
+        }}
+        showButton={isEditable}
       />
 
       <div className="w-full py-2">
+        {showLabelForm && (
+          <div className="my-2 w-full rounded border border-custom-border-200 px-3.5 py-2">
+            <CreateUpdateLabelInline
+              labelForm={showLabelForm}
+              setLabelForm={setLabelForm}
+              isUpdating={isUpdating}
+              labelOperationsCallbacks={labelOperationsCallbacks}
+              ref={scrollToRef}
+              onClose={() => {
+                setLabelForm(false);
+                setIsUpdating(false);
+              }}
+            />
+          </div>
+        )}
         {projectLabels ? (
-          projectLabels.length === 0 ? (
+          projectLabels.length === 0 && !showLabelForm ? (
             <EmptyStateCompact
               assetKey="label"
               assetClassName="size-20"
               title={t("settings_empty_state.labels.title")}
               description={t("settings_empty_state.labels.description")}
+              actions={[
+                {
+                  label: t("settings_empty_state.labels.cta_primary"),
+                  onClick: () => {
+                    newLabel();
+                    captureClick({
+                      elementName: PROJECT_SETTINGS_TRACKER_ELEMENTS.LABELS_EMPTY_STATE_CREATE_BUTTON,
+                    });
+                  },
+                },
+              ]}
               align="start"
               rootClassName="py-20"
             />
@@ -117,12 +164,14 @@ export const ProjectSettingsLabelList = observer(function ProjectSettingsLabelLi
             )
           )
         ) : (
-          <Loader className="space-y-5">
-            <Loader.Item height="42px" />
-            <Loader.Item height="42px" />
-            <Loader.Item height="42px" />
-            <Loader.Item height="42px" />
-          </Loader>
+          !showLabelForm && (
+            <Loader className="space-y-5">
+              <Loader.Item height="42px" />
+              <Loader.Item height="42px" />
+              <Loader.Item height="42px" />
+              <Loader.Item height="42px" />
+            </Loader>
+          )
         )}
       </div>
     </>
