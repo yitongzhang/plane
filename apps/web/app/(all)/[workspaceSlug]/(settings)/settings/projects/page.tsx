@@ -8,10 +8,13 @@ import { cn } from "@plane/utils";
 // assets
 import ProjectDarkEmptyState from "@/app/assets/empty-state/project-settings/no-projects-dark.png?url";
 import ProjectLightEmptyState from "@/app/assets/empty-state/project-settings/no-projects-light.png?url";
+// hooks
+import { useCommandPalette } from "@/hooks/store/use-command-palette";
 
 function ProjectSettingsPage() {
   // store hooks
   const { resolvedTheme } = useTheme();
+  const { toggleCreateProjectModal } = useCommandPalette();
   // derived values
   const resolvedPath = resolvedTheme === "dark" ? ProjectDarkEmptyState : ProjectLightEmptyState;
   return (
@@ -28,9 +31,7 @@ function ProjectSettingsPage() {
         </Link>
         <Button
           size="sm"
-          onClick={() => {
-            // Button exists but does nothing - create project modal was removed
-          }}
+          onClick={() => toggleCreateProjectModal(true)}
           data-ph-element={PROJECT_TRACKER_ELEMENTS.EMPTY_STATE_CREATE_PROJECT_BUTTON}
         >
           Start your first project

@@ -12,6 +12,7 @@ import AnalyticsFilterActions from "@/components/analytics/analytics-filter-acti
 import { PageHead } from "@/components/core/page-title";
 // hooks
 import { captureClick } from "@/helpers/event-tracker.helper";
+import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useProject } from "@/hooks/store/use-project";
 import { useWorkspace } from "@/hooks/store/use-workspace";
 import { useUserPermissions } from "@/hooks/store/user";
@@ -28,6 +29,7 @@ function AnalyticsPage({ params }: Route.ComponentProps) {
   const { t } = useTranslation();
 
   // store hooks
+  const { toggleCreateProjectModal } = useCommandPalette();
   const { workspaceProjectIds, loader } = useProject();
   const { currentWorkspace } = useWorkspace();
   const { allowPermissions } = useUserPermissions();
@@ -112,7 +114,7 @@ function AnalyticsPage({ params }: Route.ComponentProps) {
                 {
                   label: "Create a project",
                   onClick: () => {
-                    // Button exists but does nothing - create project modal was removed
+                    toggleCreateProjectModal(true);
                     captureClick({ elementName: PROJECT_TRACKER_ELEMENTS.EMPTY_STATE_CREATE_PROJECT_BUTTON });
                   },
                   disabled: !canPerformEmptyStateActions,

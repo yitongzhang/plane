@@ -10,17 +10,12 @@ import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useProject } from "@/hooks/store/use-project";
 import { useUserPermissions } from "@/hooks/store/user";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const noopToggleCreateProjectModal = (_value?: boolean) => {
-  // Button exists but does nothing - create project modal was removed
-};
-
 export const GlobalViewEmptyState = observer(function GlobalViewEmptyState() {
   // plane imports
   const { t } = useTranslation();
   // store hooks
   const { workspaceProjectIds } = useProject();
-  const { toggleCreateIssueModal } = useCommandPalette();
+  const { toggleCreateIssueModal, toggleCreateProjectModal } = useCommandPalette();
   const { allowPermissions } = useUserPermissions();
   // derived values
   const hasMemberLevelPermission = allowPermissions(
@@ -39,7 +34,7 @@ export const GlobalViewEmptyState = observer(function GlobalViewEmptyState() {
           {
             label: t("workspace_projects.empty_state.no_projects.primary_button.text"),
             onClick: () => {
-              noopToggleCreateProjectModal(true);
+              toggleCreateProjectModal(true);
               captureClick({ elementName: WORK_ITEM_TRACKER_ELEMENTS.EMPTY_STATE_ADD_BUTTON.GLOBAL_VIEW });
             },
             disabled: !hasMemberLevelPermission,

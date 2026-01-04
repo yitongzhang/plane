@@ -10,6 +10,7 @@ import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { Tooltip } from "@plane/propel/tooltip";
 import { copyUrlToClipboard, orderJoinedProjects } from "@plane/utils";
 // components
+import { CreateProjectModal } from "@/components/project/create-project-modal";
 import { SidebarProjectsListItem } from "@/components/workspace/sidebar/projects-list-item";
 // hooks
 import { useAppTheme } from "@/hooks/store/use-app-theme";
@@ -22,6 +23,8 @@ export const ExtendedProjectSidebar = observer(function ExtendedProjectSidebar()
   // refs
   const extendedProjectSidebarRef = useRef<HTMLDivElement | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  // states
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   // routers
   const { workspaceSlug } = useParams();
   // store hooks
@@ -86,6 +89,14 @@ export const ExtendedProjectSidebar = observer(function ExtendedProjectSidebar()
   };
   return (
     <>
+      {workspaceSlug && (
+        <CreateProjectModal
+          isOpen={isProjectModalOpen}
+          onClose={() => setIsProjectModalOpen(false)}
+          setToFavorite={false}
+          workspaceSlug={workspaceSlug.toString()}
+        />
+      )}
       <ExtendedSidebarWrapper
         isExtendedSidebarOpened={!!isExtendedProjectSidebarOpened}
         extendedSidebarRef={extendedProjectSidebarRef}
@@ -103,7 +114,7 @@ export const ExtendedProjectSidebar = observer(function ExtendedProjectSidebar()
                   data-ph-element={PROJECT_TRACKER_ELEMENTS.EXTENDED_SIDEBAR_ADD_BUTTON}
                   className="p-0.5 rounded hover:bg-custom-sidebar-background-80 flex-shrink-0 text-custom-text-300 hover:text-custom-text-200 transition-colors"
                   onClick={() => {
-                    // Button exists but does nothing - create project modal was removed
+                    setIsProjectModalOpen(true);
                   }}
                 >
                   <Plus className="size-3" />

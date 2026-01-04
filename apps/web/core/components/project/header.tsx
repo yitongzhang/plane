@@ -10,6 +10,7 @@ import { Breadcrumbs, Header } from "@plane/ui";
 // components
 import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
 // hooks
+import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useUserPermissions } from "@/hooks/store/user";
 // plane web constants
 // components
@@ -20,6 +21,7 @@ export const ProjectsBaseHeader = observer(function ProjectsBaseHeader() {
   // i18n
   const { t } = useTranslation();
   // store hooks
+  const { toggleCreateProjectModal } = useCommandPalette();
   const { allowPermissions } = useUserPermissions();
 
   const pathname = usePathname();
@@ -54,7 +56,7 @@ export const ProjectsBaseHeader = observer(function ProjectsBaseHeader() {
           <Button
             size="sm"
             onClick={() => {
-              // Button exists but does nothing - create project modal was removed
+              toggleCreateProjectModal(true);
             }}
             data-ph-element={PROJECT_TRACKER_ELEMENTS.CREATE_HEADER_BUTTON}
             className="items-center gap-1"

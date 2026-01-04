@@ -13,6 +13,7 @@ import { cn, getFileURL } from "@plane/utils";
 // helpers
 // hooks
 import { captureClick } from "@/helpers/event-tracker.helper";
+import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useProject } from "@/hooks/store/use-project";
 import { useWorkspace } from "@/hooks/store/use-workspace";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
@@ -23,6 +24,7 @@ export const NoProjectsEmptyState = observer(function NoProjectsEmptyState() {
   const { workspaceSlug } = useParams();
   // store hooks
   const { allowPermissions } = useUserPermissions();
+  const { toggleCreateProjectModal } = useCommandPalette();
   const { data: currentUser } = useUser();
   const { joinedProjectIds } = useProject();
   const { currentWorkspace: activeWorkspace } = useWorkspace();
@@ -54,7 +56,7 @@ export const NoProjectsEmptyState = observer(function NoProjectsEmptyState() {
           if (!canCreateProject) return;
           e.preventDefault();
           e.stopPropagation();
-          // Button exists but does nothing - create project modal was removed
+          toggleCreateProjectModal(true);
           captureClick({ elementName: PROJECT_TRACKER_ELEMENTS.EMPTY_STATE_CREATE_PROJECT_BUTTON });
         },
         disabled: !canCreateProject,
